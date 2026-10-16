@@ -107,7 +107,9 @@ def collect():
 
 
 def build_sidebar(files):
-    lines = ['- [{}]({})'.format(safe_label(n), quote(p)) for n, p in TOP_ITEMS]
+    # 链接统一以 / 开头（站点根相对）：relativePath 模式下 docsify 会把无 / 的
+    # 链接按"当前页面目录"解析，导致从子目录页面点导航跳错位置
+    lines = ['- [{}](/{})'.format(safe_label(n), quote(p)) for n, p in TOP_ITEMS]
     lines.append('')
 
     dirs = sorted({f.parts[0] for f in files if len(f.parts) > 1},
@@ -140,7 +142,7 @@ def build_sidebar(files):
         for f in mds:
             rel = f.relative_to(ROOT).as_posix()
             label = title_of(rel) or f.stem
-            lines.append('  ' * depth + '- [{}]({})'.format(safe_label(label), quote(rel)))
+            lines.append('  ' * depth + '- [{}](/{})'.format(safe_label(label), quote(rel)))
 
     for d in dirs:
         lines.append('- **{}**'.format(safe_label(d)))

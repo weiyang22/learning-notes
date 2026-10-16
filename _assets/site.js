@@ -166,7 +166,11 @@
     var h = location.hash.replace(/^#\/?/, '');
     var p = h.split('?')[0];
     try { p = decodeURIComponent(p); } catch (e) {}
-    return p || 'README.md';
+    p = (p || 'README.md').replace(/\/+$/, '');
+    if (!p) p = 'README.md';
+    // docsify 渲染的导航/侧边栏链接会省略 .md（如 #/progress），这里统一补全
+    if (!/\.md$/.test(p)) p += '.md';
+    return p;
   }
 
   function routeDir() {
